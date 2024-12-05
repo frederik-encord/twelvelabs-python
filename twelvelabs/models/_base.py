@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, RootModel
-from typing import List, Optional, TypeVar
+from typing import List, Optional, TypeVar, Any
 
 
 class ModelMixin:
@@ -9,6 +9,14 @@ class ModelMixin:
 
 class Object(ModelMixin, BaseModel):
     id: str = Field(alias="_id")
+
+    def __hash__(self) -> int:
+        return self.id.__hash__()
+    
+    def __eq__(self, other: Any):
+        if not isinstance(other, type(self)):
+            return False
+        return self.id == other.id
 
 
 class ObjectWithTimestamp(ModelMixin, BaseModel):
